@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GEO-scan voor e-commerce</title>
+  <link rel="icon" href="/logo.svg">
+  <style>
+    body{font-family:Inter,system-ui,sans-serif;max-width:880px;margin:40px auto;padding:0 16px}
+    input,button{padding:12px;border-radius:12px;border:1px solid #ddd}
+    form{display:grid;gap:12px;grid-template-columns:1fr 1fr auto}
+    .card{border:1px solid #eee;border-radius:16px;padding:16px;margin-top:24px}
+  </style>
+</head>
+<body>
+  <header style="display:flex;gap:12px;align-items:center;margin-bottom:24px">
+    <img src="/logo.svg" alt="logo" width="32" height="32" />
+    <h1 style="margin:0">GEO-scan voor e-commerce</h1>
+  </header>
+
+  <p>Vraag gratis een 1-pagina scan aan. Je ontvangt een bevestiging; wij voeren de scan handmatig uit.</p>
+
+  <form id="leadForm">
+    <input required type="url" name="url" placeholder="https://jouwshop.nl/product/123" />
+    <input required type="email" name="email" placeholder="jij@bedrijf.nl" />
+    <button type="submit">Aanvragen</button>
+  </form>
+
+  <div id="msg" class="card" style="display:none"></div>
+
+  <section style="margin-top:48px">
+    <h2>Volledige GEO-audit</h2>
+    <ul>
+      <li>Volledige site-crawl + prioriteiten</li>
+      <li>Product-, categorie- en FAQ-deep dive</li>
+      <li>Techniek (sitemaps, hreflang, canonicals, performance)</li>
+      <li>Concrete AI-adviezen klaar voor implementatie</li>
+    </ul>
+    <p><b>Prijs:</b> op aanvraag — gemiddeld €999–€4.999</p>
+  </section>
+
+  <footer style="margin-top:64px;color:#666">© <span id="year"></span> GEO Scanner</footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const form = document.getElementById('leadForm');
+    const msg = document.getElementById('msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      msg.style.display = 'none';
+      try {
+        const res = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'Er ging iets mis');
+        msg.textContent = 'Bedankt! We nemen contact op.';
+        msg.style.display = 'block';
+        form.reset();
+      } catch (err) {
+        msg.textContent = 'Fout: ' + err.message;
+        msg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
