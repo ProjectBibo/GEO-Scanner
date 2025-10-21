@@ -1,0 +1,8 @@
+{
+  "name": "geo-scanner",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "mkdir -p dist && cp -R public/* dist/"
+  }
+}
